@@ -15,25 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test3_1.c">
+    <ClCompile Include="test1.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="test3_2.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test3_3.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test3_4.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test3_5.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="queue.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
