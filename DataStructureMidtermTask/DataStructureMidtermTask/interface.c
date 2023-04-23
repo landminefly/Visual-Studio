@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-
+//小米平板6Pro到此一游
 int main() {
 	char str[20]; 
 	fgets(str,20,stdin);
