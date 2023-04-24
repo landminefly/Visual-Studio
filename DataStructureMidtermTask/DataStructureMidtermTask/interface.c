@@ -49,7 +49,7 @@ void executeCommand() {
 	int* insPara = NULL;
 	switch (insCode) {
 	case 0:
-		//lsÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//lså‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_ls_para(insPara)) {
 			return;
@@ -58,19 +58,19 @@ void executeCommand() {
 		free(insPara);
 		break;
 	//case 1:
-	//	//cdÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+	//	//cdå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 	//	execute_cd(commands[1]);
 	//	break;
 	//case 2:
-	//	//cpÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+	//	//cpå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 	//	execute_cp(commands[1], commands[2]);
 	//	break;
 	//case 3:
-	//	//mvÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+	//	//mvå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 	//	execute_mv(commands[1], commands[2]);
 	//	break;
 	case 4:
-		//ctÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//ctå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_ct_para(insPara)) {
 			return;
@@ -79,17 +79,17 @@ void executeCommand() {
 		free(insPara);
 		break;
 	//case 5:
-	//	//rmÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+	//	//rmå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 	//	insPara = (int*) malloc(2 * sizeof(int));
 	//	match_rm_para(insPara);
 	//	execute_rm(insPara, commands[insPara[1]]);
 	//	free(insPara);
 	//case 6:
-	//	//chÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+	//	//chå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 	//	excute_mv(commands[1]);
 	//	break;
 	//case 7:
-	//	//scÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+	//	//scå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 	//	insPara = (int*) malloc(2 * sizeof(int));
 	//	match_sc_para(insPara);
 	//	execute_sc(insPara, commands[insPara[1]]);
@@ -113,7 +113,7 @@ int matchInstruction() {
 }
 
 int match_ls_para(int* insPara) {
-	//½«¼ÇÂ¼Â·¾¶ÏÂ±êµÄÔªËØÖµÏÈÖÃÎª-1
+	//å°†è®°å½•è·¯å¾„ä¸‹æ ‡çš„å…ƒç´ å€¼å…ˆç½®ä¸º-1
 	insPara[1] = -1;
 	insPara[0] = 0;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -140,7 +140,7 @@ int match_ls_para(int* insPara) {
 }
 
 int match_ct_para(int* insPara) {
-	//½«¼ÇÂ¼Â·¾¶ÏÂ±êµÄÔªËØÖµÏÈÖÃÎª-1
+	//å°†è®°å½•è·¯å¾„ä¸‹æ ‡çš„å…ƒç´ å€¼å…ˆç½®ä¸º-1
 	insPara[0] = 0;
 	insPara[1] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -167,7 +167,7 @@ int match_ct_para(int* insPara) {
 }
 
 int match_rm_para(int* insPara) {
-	//½«¼ÇÂ¼Â·¾¶ÏÂ±êµÄÔªËØÖµÏÈÖÃÎª-1
+	//å°†è®°å½•è·¯å¾„ä¸‹æ ‡çš„å…ƒç´ å€¼å…ˆç½®ä¸º-1
 	insPara[0] = 0;
 	insPara[1] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -194,7 +194,7 @@ int match_rm_para(int* insPara) {
 }
 
 int match_sc_para(int* insPara) {
-	//½«¼ÇÂ¼Â·¾¶ÏÂ±êµÄÔªËØÖµÏÈÖÃÎª-1
+	//å°†è®°å½•è·¯å¾„ä¸‹æ ‡çš„å…ƒç´ å€¼å…ˆç½®ä¸º-1
 	insPara[0] = 0;
 	insPara[1] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
