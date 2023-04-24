@@ -18,5 +18,13 @@
     <ClCompile Include="interface.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="struct.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fileSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
