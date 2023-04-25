@@ -65,14 +65,22 @@ void executeCommand() {
 			execute_cd(commands[1]);
 		}
 		break;
-		//case 2:
-		//	//cp命令没有额外选项，直接传入路径即可
-		//	execute_cp(commands[1], commands[2]);
-		//	break;
-		//case 3:
-		//	//mv命令没有额外选项，直接传入路径即可
-		//	execute_mv(commands[1], commands[2]);
-		//	break;
+	case 2:
+		//cp命令没有额外选项，直接传入路径即可
+		if (commands[1] == NULL || commands[2] == NULL) {
+			printf("you have not entered srcPth or desPath\n");
+		} else {
+			execute_cp(commands[1]);
+		}
+		break;
+	case 3:
+		//mv命令没有额外选项，直接传入路径即可
+		if (commands[1] == NULL || commands[2] == NULL) {
+			printf("you have not entered srcPth or desPath\n");
+		} else {
+			execute_mv(commands[1]);
+		}
+		break;
 	case 4:
 		//ct命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(2 * sizeof(int));
@@ -106,10 +114,10 @@ void executeCommand() {
 		//	match_sc_para(insPara);
 		//	execute_sc(insPara, commands[insPara[1]]);
 		//	free(insPara);
-		//case 8:
-		//	execute_hp();
+		/*case 8:
+			execute_hp();*/
 	case -1:
-		printf("no such instrcution named %s\n", commands[0]);
+		printf("no such instrcution named %s, if you need help, please enter hp\n", commands[0]);
 		break;
 	}
 }

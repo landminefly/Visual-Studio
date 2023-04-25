@@ -24,7 +24,7 @@ void init() {
 	printf("%s >:", workingDirPath);
 }
 
-void toSplitPath(char* path) {
+int toSplitPath(char* path) {
 	for (int i = 0; i < pathDepth; i++) {
 		splitPath[i] = NULL;
 	}
@@ -35,10 +35,17 @@ void toSplitPath(char* path) {
 			break;
 		}
 	}
+	if (splitPath[0] == NULL) {
+		printf("wrong path\n");
+		return 0;
+	}
+	return 1;
 }
 
 int execute_ct(int* insPara, char* path) {
-	toSplitPath(path);
+	if (!toSplitPath(path)) {
+		return 0;
+	}
 	Node* tempNode;
 	int depthCount;
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -176,7 +183,9 @@ int execute_ls(int* insPara, char* path) {
 	if (insPara[1] == -1) {
 		tempNode = workingDir;
 	} else {
-		toSplitPath(path);
+		if (!toSplitPath(path)) {
+			return 0;
+		}
 		int depthCount;
 		if (strcmp(splitPath[0], ".") == 0) {
 			tempNode = &ROOT;
@@ -252,7 +261,9 @@ int execute_ls(int* insPara, char* path) {
 int execute_cd(char* path) {
 	char tempPath[100] = { '\0' };
 	int tempIndex = 0;
-	toSplitPath(path);
+	if (!toSplitPath(path)) {
+		return 0;
+	}
 	Node* tempNode;
 	int depthCount;
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -317,7 +328,9 @@ void rm_recur(Node* node) {
 }
 
 int execute_rm(int* insPara, char* path) {
-	toSplitPath(path);
+	if (!toSplitPath(path)) {
+		return 0;
+	}
 	Node* tempNode;
 	Node* preTempNode;
 	int depthCount;
@@ -414,7 +427,9 @@ int execute_rm(int* insPara, char* path) {
 }
 
 int execute_vw(int* insPara, char* path) {
-	toSplitPath(path);
+	if (!toSplitPath(path)) {
+		return 0;
+	}
 	Node* tempNode;
 	int depthCount;
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -502,83 +517,7 @@ int execute_vw(int* insPara, char* path) {
 	return 1;
 }
 
-int mv_search(Node** pointer, Node** prePointer, char* path) {
-	Node* tempNode;
-	Node* preTempNode;
-	toSplitPath(path);
-	int depthCount;
-	if (strcmp(splitPath[0], ".") == 0) {
-		if (splitPath[1] == NULL) {
-			printf("you can not mv or rename root\n");
-			return 0;
-		}
-		tempNode = &ROOT;
-		depthCount = 1;
-	} else {
-		tempNode = workingDir;
-		depthCount = 0;
-	}
-	int isSucess = 1;
-	while (splitPath[depthCount + 1] != NULL) {
-		if (tempNode->firstChild != NULL) {
-			tempNode = tempNode->firstChild;
-			int isFound = 1;
-			while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
-				if (tempNode->rightSibling == NULL) {
-					isFound = 0;
-					break;
-				}
-				tempNode = tempNode->rightSibling;
-			}
-			if (isFound) {
-				if (tempNode->isDir == 0) {
-					printf("%s is not a dir\n", tempNode->content);
-					isSucess = 0;
-					break;
-				}
-				depthCount++;
-			} else {
-				printf("no such dir named %s\n", splitPath[depthCount]);
-				isSucess = 0;
-				break;
-			}
-		} else {
-			printf("no such dir named %s\n", splitPath[depthCount]);
-			isSucess = 0;
-			break;
-		}
-	}
-	if (!isSucess) {
-		return 0;
-	}
-
-	if (tempNode->firstChild != NULL) {
-		preTempNode = tempNode;
-		tempNode = tempNode->firstChild;
-		int isFound = 1;
-		while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
-			if (tempNode->rightSibling == NULL) {
-				isFound = 0;
-				break;
-			}
-			preTempNode = tempNode;
-			tempNode = tempNode->rightSibling;
-		}
-		if (isFound) {
-			
-		} else {
-			printf("no such file or dir named %s\n", splitPath[depthCount]);
-			return 0;
-		}
-	} else {
-		printf("no such file or dir named %s\n", splitPath[depthCount]);
-		return 0;
-	}
-	return 1;
-}
-
-
-int execute_mv(char* desPath,char* srcPath) {
+int execute_mv(char* srcPath, char* desPath) {
 	Node* tempNode;
 	Node* preTempNode;
 	int depthCount;
@@ -586,7 +525,9 @@ int execute_mv(char* desPath,char* srcPath) {
 	Node* src;
 	Node* parentSrc;
 	Node* preSrc;
-	toSplitPath(srcPath);
+	if (!toSplitPath(desPath)) {
+		return 0;
+	}
 	if (strcmp(splitPath[0], ".") == 0) {
 		if (splitPath[1] == NULL) {
 			printf("you can not mv or rename root\n");
@@ -659,7 +600,9 @@ int execute_mv(char* desPath,char* srcPath) {
 
 	Node* preDes;
 	Node* parentDes;
-	toSplitPath(desPath);
+	if (!toSplitPath(srcPath)) {
+		return 0;
+	}
 	if (strcmp(splitPath[0], ".") == 0) {
 		if (splitPath[1] == NULL) {
 			printf("you can not mv or rename root\n");
@@ -716,13 +659,22 @@ int execute_mv(char* desPath,char* srcPath) {
 	} else {
 		if (tempNode->firstChild != NULL) {
 			tempNode = tempNode->firstChild;
+			if (strcmp(tempNode->name, splitPath[depthCount]) == 0) {
+				printf("file or dir with the same name has existed\n");
+				return 0;
+			}
 			while (tempNode->rightSibling != NULL) {
 				tempNode = tempNode->rightSibling;
+				if (strcmp(tempNode->name, splitPath[depthCount]) == 0) {
+					printf("file or dir with the same name has existed\n");
+					return 0;
+				}
 			}
 			preDes = tempNode;
 			if (preSrc->firstChild == src) {
 				preSrc->firstChild = src->rightSibling;
 				preDes->rightSibling = src;
+				src->rightSibling = NULL;
 				strcpy(src->name, splitPath[depthCount]);
 				if (!src->isDir) {
 					time_t t;
@@ -732,6 +684,7 @@ int execute_mv(char* desPath,char* srcPath) {
 			} else {
 				preSrc->rightSibling = src->rightSibling;
 				preDes->rightSibling = src;
+				src->rightSibling = NULL;
 				strcpy(src->name, splitPath[depthCount]);
 				if (!src->isDir) {
 					time_t t;
@@ -744,6 +697,7 @@ int execute_mv(char* desPath,char* srcPath) {
 			if (preSrc->firstChild == src) {
 				preSrc->firstChild = src->rightSibling;
 				preDes->firstChild = src;
+				src->rightSibling = NULL;
 				strcpy(src->name, splitPath[depthCount]);
 				if (!src->isDir) {
 					time_t t;
@@ -753,6 +707,7 @@ int execute_mv(char* desPath,char* srcPath) {
 			} else {
 				preSrc->rightSibling = src->rightSibling;
 				preDes->firstChild = src;
+				src->rightSibling = NULL;
 				strcpy(src->name, splitPath[depthCount]);
 				if (!src->isDir) {
 					time_t t;
@@ -762,5 +717,154 @@ int execute_mv(char* desPath,char* srcPath) {
 			}
 		}
 	}
+	return 1;
+}
+
+int excute_cp(char* srcPath, char* desPath) {
+	Node* tempNode;
+	Node* preTempNode;
+	int depthCount;
+
+	Node* src;
+	Node* preSrc;
+	if (!toSplitPath(desPath)) {
+		return 0;
+	}
+	if (strcmp(splitPath[0], ".") == 0) {
+		if (splitPath[1] == NULL) {
+			printf("you can not mv or rename root\n");
+			return 0;
+		}
+		tempNode = &ROOT;
+		depthCount = 1;
+	} else {
+		tempNode = workingDir;
+		depthCount = 0;
+	}
+	int isSucess = 1;
+	while (splitPath[depthCount + 1] != NULL) {
+		if (tempNode->firstChild != NULL) {
+			tempNode = tempNode->firstChild;
+			int isFound = 1;
+			while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
+				if (tempNode->rightSibling == NULL) {
+					isFound = 0;
+					break;
+				}
+				tempNode = tempNode->rightSibling;
+			}
+			if (isFound) {
+				if (tempNode->isDir == 0) {
+					printf("%s is not a dir\n", tempNode->content);
+					isSucess = 0;
+					break;
+				}
+				depthCount++;
+			} else {
+				printf("no such dir named %s\n", splitPath[depthCount]);
+				isSucess = 0;
+				break;
+			}
+		} else {
+			printf("no such dir named %s\n", splitPath[depthCount]);
+			isSucess = 0;
+			break;
+		}
+	}
+	if (!isSucess) {
+		return 0;
+	}
+
+	if (tempNode->firstChild != NULL) {
+		preTempNode = tempNode;
+		tempNode = tempNode->firstChild;
+		int isFound = 1;
+		while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
+			if (tempNode->rightSibling == NULL) {
+				isFound = 0;
+				break;
+			}
+			preTempNode = tempNode;
+			tempNode = tempNode->rightSibling;
+		}
+		if (isFound) {
+			preSrc = preTempNode;
+			src = tempNode;
+		} else {
+			printf("no such file or dir named %s\n", splitPath[depthCount]);
+			return 0;
+		}
+	} else {
+		printf("no such file or dir named %s\n", splitPath[depthCount]);
+		return 0;
+	}
+
+	Node* preDes;
+	if (!toSplitPath(srcPath)) {
+		return 0;
+	}
+	if (strcmp(splitPath[0], ".") == 0) {
+		if (splitPath[1] == NULL) {
+			printf("you can not mv or rename root\n");
+			return 0;
+		}
+		tempNode = &ROOT;
+		depthCount = 1;
+	} else {
+		tempNode = workingDir;
+		depthCount = 0;
+	}
+	isSucess = 1;
+	while (splitPath[depthCount + 1] != NULL) {
+		if (tempNode->firstChild != NULL) {
+			tempNode = tempNode->firstChild;
+			int isFound = 1;
+			while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
+				if (tempNode->rightSibling == NULL) {
+					isFound = 0;
+					break;
+				}
+				tempNode = tempNode->rightSibling;
+			}
+			if (isFound) {
+				if (tempNode->isDir == 0) {
+					printf("%s is not a dir\n", tempNode->content);
+					isSucess = 0;
+					break;
+				}
+				depthCount++;
+			} else {
+				printf("no such dir named %s\n", splitPath[depthCount]);
+				isSucess = 0;
+				break;
+			}
+		} else {
+			printf("no such dir named %s\n", splitPath[depthCount]);
+			isSucess = 0;
+			break;
+		}
+	}
+	if (!isSucess) {
+		return 0;
+	}
+
+	if (tempNode->firstChild != NULL) {
+		tempNode = tempNode->firstChild;
+		if (strcmp(tempNode->name, splitPath[depthCount]) == 0) {
+			printf("file or dir with the same name has existed\n");
+			return 0;
+		}
+		while (tempNode->rightSibling != NULL) {
+			tempNode = tempNode->rightSibling;
+			if (strcmp(tempNode->name, splitPath[depthCount]) == 0) {
+				printf("file or dir with the same name has existed\n");
+				return 0;
+			}
+		}
+		
+	} else {
+		
+	}
+
 	return 1;
 }
