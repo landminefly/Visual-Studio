@@ -70,7 +70,7 @@ void executeCommand() {
 		if (commands[1] == NULL || commands[2] == NULL) {
 			printf("you have not entered srcPth or desPath\n");
 		} else {
-			execute_cp(commands[1]);
+			execute_cp(commands[1], commands[2]);
 		}
 		break;
 	case 3:
@@ -78,7 +78,7 @@ void executeCommand() {
 		if (commands[1] == NULL || commands[2] == NULL) {
 			printf("you have not entered srcPth or desPath\n");
 		} else {
-			execute_mv(commands[1]);
+			execute_mv(commands[1], commands[2]);
 		}
 		break;
 	case 4:
@@ -108,14 +108,18 @@ void executeCommand() {
 		execute_vw(insPara, commands[insPara[1]]);
 		free(insPara);
 		break;
-		//case 7:
-		//	//sc命令有额外选项，要进行选项匹配
-		//	insPara = (int*) malloc(2 * sizeof(int));
-		//	match_sc_para(insPara);
-		//	execute_sc(insPara, commands[insPara[1]]);
-		//	free(insPara);
-		/*case 8:
-			execute_hp();*/
+	case 7:
+		//sc命令有额外选项，要进行选项匹配
+		insPara = (int*) malloc(4 * sizeof(int));
+		if (!match_sc_para(insPara)) {
+			return;
+		}
+		execute_sc(insPara, commands[insPara[2]],commands[insPara[3]]);
+		free(insPara);
+		break;
+	case 8:
+		execute_hp();
+		break;
 	case -1:
 		printf("no such instrcution named %s, if you need help, please enter hp\n", commands[0]);
 		break;
@@ -212,25 +216,36 @@ int match_rm_para(int* insPara) {
 int match_sc_para(int* insPara) {
 	//将记录路径下标的元素值先置为-1
 	insPara[0] = 0;
-	insPara[1] = -1;
+	insPara[1] = 0;
+	//时间戳 or 部分文件名
+	insPara[2] = -1;
+	//路径
+	insPara[3] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
-
 		if (commands[i][0] == '-') {
-			if (strcmp(commands[i], "-t") == 0) {
+			if (strcmp(commands[i], "-lt") == 0) {
 				insPara[0] = 1;
+			} else if (strcmp(commands[i], "-gt") == 0) {
+				insPara[1] = 1;
 			} else {
 				printf("no such para named %s\n", commands[i]);
 				return 0;
 			}
-		} else if (insPara[1] == -1) {
-			insPara[1] = i;
-		} else if (insPara[1] != -1) {
-			printf("you have entered more than one path\n");
+		} else if (insPara[2] == -1) {
+			insPara[2] = i;
+		} else if (insPara[3] == -1) {
+			insPara[3] = i;
+		} else {
+			printf("you have entered too many data\n");
 			return 0;
 		}
 	}
-	if (insPara[1] == -1) {
-		printf("you have not entered path\n");
+	if (insPara[0] == 1 && insPara[1] == 1) {
+		printf("-lt -gt can not be used in the same time\n");
+		return 0;
+	}
+	if (insPara[2] == -1) {
+		printf("you have not entered time or name\n");
 		return 0;
 	}
 	return 1;

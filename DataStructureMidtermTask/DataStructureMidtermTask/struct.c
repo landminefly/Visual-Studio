@@ -525,7 +525,7 @@ int execute_mv(char* srcPath, char* desPath) {
 	Node* src;
 	Node* parentSrc;
 	Node* preSrc;
-	if (!toSplitPath(desPath)) {
+	if (!toSplitPath(srcPath)) {
 		return 0;
 	}
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -600,7 +600,7 @@ int execute_mv(char* srcPath, char* desPath) {
 
 	Node* preDes;
 	Node* parentDes;
-	if (!toSplitPath(srcPath)) {
+	if (!toSplitPath(desPath)) {
 		return 0;
 	}
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -720,14 +720,12 @@ int execute_mv(char* srcPath, char* desPath) {
 	return 1;
 }
 
-int excute_cp(char* srcPath, char* desPath) {
+int execute_cp(char* srcPath, char* desPath) {
 	Node* tempNode;
-	Node* preTempNode;
 	int depthCount;
 
 	Node* src;
-	Node* preSrc;
-	if (!toSplitPath(desPath)) {
+	if (!toSplitPath(srcPath)) {
 		return 0;
 	}
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -776,7 +774,6 @@ int excute_cp(char* srcPath, char* desPath) {
 	}
 
 	if (tempNode->firstChild != NULL) {
-		preTempNode = tempNode;
 		tempNode = tempNode->firstChild;
 		int isFound = 1;
 		while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
@@ -784,11 +781,13 @@ int excute_cp(char* srcPath, char* desPath) {
 				isFound = 0;
 				break;
 			}
-			preTempNode = tempNode;
 			tempNode = tempNode->rightSibling;
 		}
 		if (isFound) {
-			preSrc = preTempNode;
+			if (tempNode->isDir == 1) {
+				printf("can not copy dir\n");
+				return 0;
+			}
 			src = tempNode;
 		} else {
 			printf("no such file or dir named %s\n", splitPath[depthCount]);
@@ -800,7 +799,7 @@ int excute_cp(char* srcPath, char* desPath) {
 	}
 
 	Node* preDes;
-	if (!toSplitPath(srcPath)) {
+	if (!toSplitPath(desPath)) {
 		return 0;
 	}
 	if (strcmp(splitPath[0], ".") == 0) {
@@ -861,10 +860,277 @@ int excute_cp(char* srcPath, char* desPath) {
 				return 0;
 			}
 		}
-		
+		preDes = tempNode;
+
+		Node* newNode = (Node*) malloc(sizeof(Node));
+		newNode->isDir = 0;
+		strcpy(newNode->name, src->name);
+		strcpy(newNode->content, src->content);
+		newNode->firstChild = NULL;
+		newNode->rightSibling = NULL;
+		time_t t;
+		time(&t);
+		newNode->lastUpdate = t;
+		preDes->rightSibling = newNode;
 	} else {
-		
+		preDes = tempNode;
+		Node* newNode = (Node*) malloc(sizeof(Node));
+		newNode->isDir = 0;
+		strcpy(newNode->name, splitPath[depthCount]);
+		strcpy(newNode->content, src->content);
+		newNode->firstChild = NULL;
+		newNode->rightSibling = NULL;
+		time_t t;
+		time(&t);
+		newNode->lastUpdate = t;
+		preDes->firstChild = newNode;
+	}
+	return 1;
+}
+
+void time_sc_recur(Node* node, char* time, char* prePath, int pattern) {
+	if (node != NULL) {
+
+		char path[100] = { '\0' };
+		strcpy(path, prePath);
+		int tempIndex = strlen(prePath);
+		for (int i = 0; i < strlen(node->name); i++) {
+			path[tempIndex++] = (node->name)[i];
+		}
+
+		if (node->isDir == 0) {
+			char lastUpdate[20] = { '\0' };
+			sprintf(lastUpdate, "%lu", node->lastUpdate);
+			if (strcmp(lastUpdate, time) == pattern) {
+				printf("%s\n", path);
+			}
+		}
+
+		time_sc_recur(node->rightSibling, time, prePath, pattern);
+
+		if (node->isDir == 1) {
+			path[tempIndex++] = '/';
+			time_sc_recur(node->firstChild, time, path, pattern);
+		}
+	}
+}
+
+int kmp(char* name, char* key) {
+	int keyLength = strlen(key);
+	int nameLength = strlen(name);
+	int* next = (int*) malloc(sizeof(int) * keyLength);
+
+	next[0] = -1;
+	int i = -1;
+	int j = 0;
+	while (j < keyLength - 1) {
+		if (i == -1 || key[i] == key[j]) {
+			i++;
+			j++;
+			if (key[i] != key[j]) {
+				next[j] = i;
+			} else {
+				next[j] = next[i];
+			}
+		} else {
+			i = next[i];
+		}
 	}
 
-	return 1;
+	i = 0;
+	j = 0;
+	while (i < nameLength && j < keyLength) {
+		if (j == -1 || name[i] == key[j]) {
+			i++;
+			j++;
+		} else {
+			j = next[j];
+		}
+	}
+	if (i == nameLength) {
+		free(next);
+		return -1;
+	} else {
+		free(next);
+		return i - j;
+	}
+}
+
+void name_sc_recur(Node* node, char* key, char* prePath) {
+	if (node != NULL) {
+
+		char path[100] = { '\0' };
+		strcpy(path, prePath);
+		int tempIndex = strlen(prePath);
+		for (int i = 0; i < strlen(node->name); i++) {
+			path[tempIndex++] = (node->name)[i];
+		}
+
+		if (node->isDir == 0) {
+			if (kmp(node->name, key) != -1) {
+				printf("%s\n", path);
+			}
+		}
+
+		name_sc_recur(node->rightSibling, key, prePath);
+
+		if (node->isDir == 1) {
+			path[tempIndex++] = '/';
+			name_sc_recur(node->firstChild, key, path);
+		}
+	}
+}
+
+int execute_sc(int* insPara, char* data, char* path) {
+	Node* nodeToStart;
+	char filePath[100];
+	if (insPara[3] == -1) {
+		nodeToStart = workingDir;
+		strcpy(filePath, workingDirPath);
+	} else {
+		char tempPath[100] = { '\0' };
+		int tempIndex = 0;
+		if (!toSplitPath(path)) {
+			return 0;
+		}
+		Node* tempNode;
+		int depthCount;
+		if (strcmp(splitPath[0], ".") == 0) {
+			strncpy(tempPath, workingDirPath, 2);
+			tempIndex = 2;
+			tempNode = &ROOT;
+			depthCount = 1;
+		} else {
+			strncpy(tempPath, workingDirPath, strlen(workingDirPath));
+			tempIndex = strlen(workingDirPath);
+			tempNode = workingDir;
+			depthCount = 0;
+		}
+		int isSucess = 1;
+		while (splitPath[depthCount] != NULL) {
+			if (tempNode->firstChild != NULL) {
+				tempNode = tempNode->firstChild;
+				int isFound = 1;
+				while (strcmp(tempNode->name, splitPath[depthCount]) != 0) {
+					if (tempNode->rightSibling == NULL) {
+						isFound = 0;
+						break;
+					}
+					tempNode = tempNode->rightSibling;
+				}
+				if (isFound) {
+					if (tempNode->isDir == 0) {
+						printf("%s is not a dir\n", splitPath[depthCount]);
+						isSucess = 0;
+						break;
+					}
+					for (int i = 0; i < strlen(splitPath[depthCount]); i++) {
+						tempPath[tempIndex++] = splitPath[depthCount][i];
+					}
+					tempPath[tempIndex++] = '/';
+					depthCount++;
+				} else {
+					printf("no such dir named %s\n", splitPath[depthCount]);
+					isSucess = 0;
+					break;
+				}
+			} else {
+				printf("no such dir named %s\n", splitPath[depthCount]);
+				isSucess = 0;
+				break;
+			}
+		}
+		if (!isSucess) {
+			return 0;
+		}
+		nodeToStart = tempNode;
+		strcpy(filePath, tempPath);
+	}
+
+	if (insPara[0] == 1) {
+		for (int i = 0; i < strlen(data); i++) {
+			if (!isdigit(data[i])) {
+				printf("wrong time");
+				return 0;
+			}
+		}
+		time_sc_recur(nodeToStart->firstChild, data, filePath, -1);
+		printf("search completed");
+
+	} else if (insPara[1] == 1) {
+		for (int i = 0; i < strlen(data); i++) {
+			if (!isdigit(data[i])) {
+				printf("wrong time");
+				return 0;
+			}
+		}
+		time_sc_recur(nodeToStart->firstChild, data, filePath, 1);
+		printf("search completed");
+	} else {
+		name_sc_recur(nodeToStart->firstChild, data, filePath);
+	}
+}
+
+int execute_hp() {
+
+	printf("对于路径，既可以使用绝对路径（例：./a），也能使用相对路径（例：b/c ，/b/c）\n");
+	printf("指令集:\n");
+
+	printf("\tls [选项] [目录路径]\n");
+	printf("\t\t显示指定目录下的所有文件及目录的信息\n");
+	printf("\t\t如果不输入路径，则默认为当前工作目录\n");
+	printf("\t\t选项：\n");
+	printf("\t\t\t-r 递归地显示所有子目录的内容\n");
+	printf("\n");
+
+	printf("\tcd 目录路径\n");
+	printf("\t\t更改工作目录\n");
+	printf("\n");
+
+	printf("\tcp 源文件路径 目标文件路径\n");
+	printf("\t\t将源文件复制到目标文件中\n");
+	printf("\t\t文件路径要提供文件名，如果目标文件名与源文件名不同，则会将目标文件自动重命名\n");
+	printf("\t\t如果目标文件所在目录中已有同名文件，同名文件不会被覆盖，而是中止复制\n");
+	printf("\t\t目前只支持复制文件，不支持复制目录\n");
+	printf("\n");
+
+	printf("\tmv 源文件/目录路径 目标文件/目录路径\n");
+	printf("\t\t1.将源文件/目录移动到目标文件/目录中 2.重命名源文件\n");
+	printf("\t\t文件/目录路径要提供文件名，如果目标文件名与源文件名不同，则会将目标文件自动重命名\n");
+	printf("\t\t如果源文件/目录与目标文件/目录在同一个父目录中，则这条指令的效果就相当于将源文件/目录重命名\n");
+	printf("\t\t移动目录时，会将改目录下的所有内容一同移动\n");
+	printf("\t\t如果目标文件/目录所在目录中已有同名文件，同名文件/目录不会被覆盖，而是中止移动\n");
+	printf("\t\t特别地，在上述前提下，如果源文件/目录与目标文件/目录在同一个父目录中，表示的意思就是将源文件/目录重命名为原先的名称，因此什么也不会发生\n");
+	printf("\n");
+
+	printf("\tct [选项] 目标文件/目录路径\n");
+	printf("\t\t在指定路径创建文件/目录\n");
+	printf("\t\t选项：\n");
+	printf("\t\t\t-d 表示创建目录，缺省表示创建文件\n");
+	printf("\n");
+
+	printf("\trm [选项] 目标文件/目录路径\n");
+	printf("\t\t删除目标文件/目录\n");
+	printf("\t\t选项：\n");
+	printf("\t\t\t-r 删除目录时，表示递归地将该目录下的所有内容一并删除；若缺省，则只能删除内容为空的目录\n");
+	printf("\n");
+
+	printf("\tvw [选项] 目标文件\n");
+	printf("\t\t查看/修改目标文件\n");
+	printf("\t\t选项：\n");
+	printf("\t\t\t-w 表示在查看文件的同时还会对其进行修改；若缺省，则表示只查看文件\n");
+	printf("\n");
+
+	printf("\tsc [选项] 搜索参数 [开始搜索的目录路径]\n");
+	printf("\t\t根据搜索参数搜索文件\n");
+	printf("\t\t\t搜索参数1：时间戳\n");
+	printf("\t\t\t搜索参数2：部分文件名\n");
+	printf("\t\t如果不写开始搜索的目录路径，则默认从当前工作目录开始\n");
+	printf("\t\t选项：\n");
+	printf("\t\t\t-lt 根据时间戳搜索时生效，表示搜索最后修改时间比指定时间戳早的文件\n");
+	printf("\t\t\t-gt 根据时间戳搜索时生效，表示搜索最后修改时间比指定时间戳晚的文件\n");
+	printf("\t\t\t注意：-lt 和 -gt 不能同时生效\n");
+	printf("\t\t如果没有选项，则根据部分文件名进行搜索\n");
+	printf("\t\t注意：开始搜索的目录路径（若有）一定要写在搜索参数之后，否则该指令无法识别，导致搜索失败\n");
+	printf("\n");
 }
