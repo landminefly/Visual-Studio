@@ -5,7 +5,7 @@
 #define instructionSetLen 9
 static char inputStr[100] = { '\0' };
 static char* commands[10] = { NULL };
-static char* instructionSet[9] = { "ls","cd","cp","mv","ct","rm","cg","sc","hp" };
+static char* instructionSet[9] = { "ls","cd","cp","mv","ct","rm","vw","sc","hp" };
 
 void input() {
 	for (int i = 0; i < inputStrLen; i++) {
@@ -14,7 +14,7 @@ void input() {
 	for (int i = 0; i < commandsLen; i++) {
 		commands[i] = NULL;
 	}
-	fgets(inputStr, 100, stdin);
+	fgets(inputStr, inputStrLen - 1, stdin);
 }
 
 void splitCommand() {
@@ -40,7 +40,7 @@ void splitCommand() {
 	3:mv(move)
 	4:ct(create)
 	5:rm(remove)
-	6:cg(change)
+	6:vw(view)
 	7:sc(search)
 	8:hp(help)
 */
@@ -57,18 +57,22 @@ void executeCommand() {
 		execute_ls(insPara, commands[insPara[1]]);
 		free(insPara);
 		break;
-	//case 1:
-	//	//cd命令没有额外选项，直接传入路径即可
-	//	execute_cd(commands[1]);
-	//	break;
-	//case 2:
-	//	//cp命令没有额外选项，直接传入路径即可
-	//	execute_cp(commands[1], commands[2]);
-	//	break;
-	//case 3:
-	//	//mv命令没有额外选项，直接传入路径即可
-	//	execute_mv(commands[1], commands[2]);
-	//	break;
+	case 1:
+		//cd命令没有额外选项，直接传入路径即可
+		if (commands[1] == NULL) {
+			printf("you have not entered path\n");
+		} else {
+			execute_cd(commands[1]);
+		}
+		break;
+		//case 2:
+		//	//cp命令没有额外选项，直接传入路径即可
+		//	execute_cp(commands[1], commands[2]);
+		//	break;
+		//case 3:
+		//	//mv命令没有额外选项，直接传入路径即可
+		//	execute_mv(commands[1], commands[2]);
+		//	break;
 	case 4:
 		//ct命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(2 * sizeof(int));
@@ -78,26 +82,34 @@ void executeCommand() {
 		execute_ct(insPara, commands[insPara[1]]);
 		free(insPara);
 		break;
-	//case 5:
-	//	//rm命令有额外选项，要进行选项匹配
-	//	insPara = (int*) malloc(2 * sizeof(int));
-	//	match_rm_para(insPara);
-	//	execute_rm(insPara, commands[insPara[1]]);
-	//	free(insPara);
-	//case 6:
-	//	//ch命令没有额外选项，直接传入路径即可
-	//	excute_mv(commands[1]);
-	//	break;
-	//case 7:
-	//	//sc命令有额外选项，要进行选项匹配
-	//	insPara = (int*) malloc(2 * sizeof(int));
-	//	match_sc_para(insPara);
-	//	execute_sc(insPara, commands[insPara[1]]);
-	//	free(insPara);
-	//case 8:
-	//	execute_hp();
+	case 5:
+		//rm命令有额外选项，要进行选项匹配
+		insPara = (int*) malloc(2 * sizeof(int));
+		if (!match_rm_para(insPara)) {
+			return;
+		}
+		execute_rm(insPara, commands[insPara[1]]);
+		free(insPara);
+		break;
+	case 6:
+		//vw命令有额外选项，要进行选项匹配
+		insPara = (int*) malloc(2 * sizeof(int));
+		if (!match_vw_para(insPara)) {
+			return;
+		}
+		execute_vw(insPara, commands[insPara[1]]);
+		free(insPara);
+		break;
+		//case 7:
+		//	//sc命令有额外选项，要进行选项匹配
+		//	insPara = (int*) malloc(2 * sizeof(int));
+		//	match_sc_para(insPara);
+		//	execute_sc(insPara, commands[insPara[1]]);
+		//	free(insPara);
+		//case 8:
+		//	execute_hp();
 	case -1:
-		printf("no such instrcution like %s\n", commands[0]);
+		printf("no such instrcution named %s\n", commands[0]);
 		break;
 	}
 }
@@ -122,7 +134,7 @@ int match_ls_para(int* insPara) {
 			if (strcmp(commands[i], "-r") == 0) {
 				insPara[0] = 1;
 			} else {
-				printf("no such para like %s\n", commands[i]);
+				printf("no such para named %s\n", commands[i]);
 				return 0;
 			}
 		} else if (insPara[1] == -1) {
@@ -131,10 +143,6 @@ int match_ls_para(int* insPara) {
 			printf("you have entered more than one path\n");
 			return 0;
 		}
-	}
-	if (insPara[1] == -1) {
-		printf("please enter path\n");
-		return 0;
 	}
 	return 1;
 }
@@ -149,7 +157,7 @@ int match_ct_para(int* insPara) {
 			if (strcmp(commands[i], "-d") == 0) {
 				insPara[0] = 1;
 			} else {
-				printf("no such para like %s\n", commands[i]);
+				printf("no such para named %s\n", commands[i]);
 				return 0;
 			}
 		} else if (insPara[1] == -1) {
@@ -160,7 +168,7 @@ int match_ct_para(int* insPara) {
 		}
 	}
 	if (insPara[1] == -1) {
-		printf("please enter path\n");
+		printf("you have not entered path\n");
 		return 0;
 	}
 	return 1;
@@ -176,7 +184,7 @@ int match_rm_para(int* insPara) {
 			if (strcmp(commands[i], "-r") == 0) {
 				insPara[0] = 1;
 			} else {
-				printf("no such para like %s\n", commands[i]);
+				printf("no such para named %s\n", commands[i]);
 				return 0;
 			}
 		} else if (insPara[1] == -1) {
@@ -187,7 +195,7 @@ int match_rm_para(int* insPara) {
 		}
 	}
 	if (insPara[1] == -1) {
-		printf("please enter path\n");
+		printf("you have not entered path\n");
 		return 0;
 	}
 	return 1;
@@ -203,7 +211,7 @@ int match_sc_para(int* insPara) {
 			if (strcmp(commands[i], "-t") == 0) {
 				insPara[0] = 1;
 			} else {
-				printf("no such para like %s\n", commands[i]);
+				printf("no such para named %s\n", commands[i]);
 				return 0;
 			}
 		} else if (insPara[1] == -1) {
@@ -214,7 +222,34 @@ int match_sc_para(int* insPara) {
 		}
 	}
 	if (insPara[1] == -1) {
-		printf("please enter path\n");
+		printf("you have not entered path\n");
+		return 0;
+	}
+	return 1;
+}
+
+int match_vw_para(int* insPara) {
+	//将记录路径下标的元素值先置为-1
+	insPara[0] = 0;
+	insPara[1] = -1;
+	for (int i = 1; commands[i] != NULL; i++) {
+
+		if (commands[i][0] == '-') {
+			if (strcmp(commands[i], "-w") == 0) {
+				insPara[0] = 1;
+			} else {
+				printf("no such para named %s\n", commands[i]);
+				return 0;
+			}
+		} else if (insPara[1] == -1) {
+			insPara[1] = i;
+		} else if (insPara[1] != -1) {
+			printf("you have entered more than one path\n");
+			return 0;
+		}
+	}
+	if (insPara[1] == -1) {
+		printf("you have not entered path\n");
 		return 0;
 	}
 	return 1;
