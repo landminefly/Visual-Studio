@@ -5,7 +5,7 @@
 #define instructionSetLen 10
 static char inputStr[100] = { '\0' };
 static char* commands[10] = { NULL };
-static char* instructionSet[10] = { "ls","cd","cp","mv","ct","rm","vw","sc","hp","quit"};
+static char* instructionSet[10] = { "ls","cd","cp","mv","ct","rm","vw","sc","hp","quit" };
 
 void input() {
 	for (int i = 0; i < inputStrLen; i++) {
@@ -114,23 +114,28 @@ int executeCommand() {
 		if (!match_sc_para(insPara)) {
 			return 1;
 		}
-		execute_sc(insPara, commands[insPara[2]],commands[insPara[3]]);
+		execute_sc(insPara, commands[insPara[2]], commands[insPara[3]]);
 		free(insPara);
 		break;
 	case 8:
 		execute_hp();
-		break;	
+		break;
 	case 9:
 		return 0;
 		break;
 	case -1:
 		printf("no such instrcution named %s, if you need help, please enter hp\n", commands[0]);
 		break;
+	case -2:
+		break;
 	}
 	return 1;
 }
 
 int matchInstruction() {
+	if (commands[0] == NULL) {
+		return -2;
+	}
 	char* instruct = commands[0];
 	for (int i = 0; i < instructionSetLen; i++) {
 		if (!strcmp(instruct, instructionSet[i])) {
