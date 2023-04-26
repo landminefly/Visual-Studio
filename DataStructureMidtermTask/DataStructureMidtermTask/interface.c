@@ -2,10 +2,10 @@
 
 #define inputStrLen 100
 #define commandsLen 10
-#define instructionSetLen 9
+#define instructionSetLen 10
 static char inputStr[100] = { '\0' };
 static char* commands[10] = { NULL };
-static char* instructionSet[9] = { "ls","cd","cp","mv","ct","rm","vw","sc","hp" };
+static char* instructionSet[10] = { "ls","cd","cp","mv","ct","rm","vw","sc","hp","quit"};
 
 void input() {
 	for (int i = 0; i < inputStrLen; i++) {
@@ -44,7 +44,7 @@ void splitCommand() {
 	7:sc(search)
 	8:hp(help)
 */
-void executeCommand() {
+int executeCommand() {
 	int insCode = matchInstruction();
 	int* insPara = NULL;
 	switch (insCode) {
@@ -52,7 +52,7 @@ void executeCommand() {
 		//ls命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_ls_para(insPara)) {
-			return;
+			return 1;
 		};
 		execute_ls(insPara, commands[insPara[1]]);
 		free(insPara);
@@ -85,7 +85,7 @@ void executeCommand() {
 		//ct命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_ct_para(insPara)) {
-			return;
+			return 1;
 		}
 		execute_ct(insPara, commands[insPara[1]]);
 		free(insPara);
@@ -94,7 +94,7 @@ void executeCommand() {
 		//rm命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_rm_para(insPara)) {
-			return;
+			return 1;
 		}
 		execute_rm(insPara, commands[insPara[1]]);
 		free(insPara);
@@ -103,7 +103,7 @@ void executeCommand() {
 		//vw命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_vw_para(insPara)) {
-			return;
+			return 1;
 		}
 		execute_vw(insPara, commands[insPara[1]]);
 		free(insPara);
@@ -112,18 +112,22 @@ void executeCommand() {
 		//sc命令有额外选项，要进行选项匹配
 		insPara = (int*) malloc(4 * sizeof(int));
 		if (!match_sc_para(insPara)) {
-			return;
+			return 1;
 		}
 		execute_sc(insPara, commands[insPara[2]],commands[insPara[3]]);
 		free(insPara);
 		break;
 	case 8:
 		execute_hp();
+		break;	
+	case 9:
+		return 0;
 		break;
 	case -1:
 		printf("no such instrcution named %s, if you need help, please enter hp\n", commands[0]);
 		break;
 	}
+	return 1;
 }
 
 int matchInstruction() {
@@ -137,7 +141,6 @@ int matchInstruction() {
 }
 
 int match_ls_para(int* insPara) {
-	//将记录路径下标的元素值先置为-1
 	insPara[1] = -1;
 	insPara[0] = 0;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -160,7 +163,6 @@ int match_ls_para(int* insPara) {
 }
 
 int match_ct_para(int* insPara) {
-	//将记录路径下标的元素值先置为-1
 	insPara[0] = 0;
 	insPara[1] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -187,7 +189,6 @@ int match_ct_para(int* insPara) {
 }
 
 int match_rm_para(int* insPara) {
-	//将记录路径下标的元素值先置为-1
 	insPara[0] = 0;
 	insPara[1] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -214,7 +215,6 @@ int match_rm_para(int* insPara) {
 }
 
 int match_sc_para(int* insPara) {
-	//将记录路径下标的元素值先置为-1
 	insPara[0] = 0;
 	insPara[1] = 0;
 	//时间戳 or 部分文件名
@@ -252,7 +252,6 @@ int match_sc_para(int* insPara) {
 }
 
 int match_vw_para(int* insPara) {
-	//将记录路径下标的元素值先置为-1
 	insPara[0] = 0;
 	insPara[1] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
@@ -283,15 +282,8 @@ int main() {
 		init();
 		input();
 		splitCommand();
-		//int commandCount = 0;
-		//while (1) {
-		//	if (commands[commandCount] != NULL) {
-		//		printf("%s\n", commands[commandCount++]);
-		//	} else {
-		//		break;
-		//	}
-		//}
-		executeCommand();
+		if (!executeCommand()) {
+			break;
+		}
 	}
-
 }
