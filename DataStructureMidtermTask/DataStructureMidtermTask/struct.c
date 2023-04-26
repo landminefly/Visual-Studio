@@ -1059,7 +1059,7 @@ int kmp(char* name, char* key) {
 			j = next[j];
 		}
 	}
-	if (i == nameLength) {
+	if (i == nameLength && j != keyLength) {
 		free(next);
 		return -1;
 	} else {
