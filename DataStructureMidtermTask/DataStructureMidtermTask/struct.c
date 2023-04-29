@@ -8,7 +8,6 @@ static char* splitPath[pathDepth] = { NULL };
 static Node ROOT = { 1,".",NULL,0,NULL,NULL };
 static char workingDirPath[100] = "./";
 static Node* workingDir = &ROOT;
-static Node* preWorkingDir = NULL;
 
 void init() {
 	printf("%s >:", workingDirPath);
@@ -1070,7 +1069,6 @@ int kmp(char* name, char* key) {
 
 int execute_hp() {
 
-	printf("对于路径，既可以使用绝对路径（例：./a），也能使用相对路径（例：b/c ，/b/c）\n");
 	printf("指令集:\n");
 
 	printf("\tls [选项] [目录路径]\n");
@@ -1081,7 +1079,7 @@ int execute_hp() {
 	printf("\n");
 
 	printf("\tcd 目录路径\n");
-	printf("\t\t更改工作目录\n");
+	printf("\t\t更改工作目录，初始化为根目录\n");
 	printf("\n");
 
 	printf("\tcp 源文件路径 目标文件路径\n");
@@ -1104,7 +1102,9 @@ int execute_hp() {
 
 	printf("\tct [选项] 目标文件/目录路径\n");
 	printf("\t\t1.在指定路径创建文件/目录\n");
-	printf("\t\t2.选项：\n");
+	printf("\t\t2.如果输入的路径并不存在，该指令会自动创建对应的目录\n");
+	printf("\t\t\t比如 ct ./a/b/c/d，而a为空目录，那么会在a中自动创建 b/c/，再在c目录中创建新文件d\n");
+	printf("\t\t3.选项：\n");
 	printf("\t\t\t-d 表示创建目录，缺省表示创建文件\n");
 	printf("\n");
 
@@ -1136,4 +1136,5 @@ int execute_hp() {
 	printf("\tquit\n");
 	printf("\t\t退出程序\n");
 	printf("\n");
+	printf("对于路径，既可以使用绝对路径（例：./a），也能使用相对路径（例：b/c ，/b/c）\n");
 }

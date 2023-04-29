@@ -124,7 +124,7 @@ int executeCommand() {
 		return 0;
 		break;
 	case -1:
-		printf("no such instrcution named %s, if you need help, please enter hp\n", commands[0]);
+		printf("no such instrcution named %s\n", commands[0]);
 		break;
 	case -2:
 		break;
@@ -283,6 +283,7 @@ int match_vw_para(int* insPara) {
 }
 
 int main() {
+	printf("welcome! If you don't konw how to start, please enter \"hp\".\n");
 	while (1) {
 		init();
 		input();
