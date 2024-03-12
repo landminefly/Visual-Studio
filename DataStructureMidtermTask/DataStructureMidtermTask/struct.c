@@ -1069,72 +1069,73 @@ int kmp(char* name, char* key) {
 
 int execute_hp() {
 
-	printf("ָ�:\n");
+	printf("指令集:\n");
 
-	printf("\tls [ѡ��] [Ŀ¼·��]\n");
-	printf("\t\t1.��ʾָ��Ŀ¼�µ������ļ���Ŀ¼����Ϣ\n");
-	printf("\t\t2.���������·������Ĭ��Ϊ��ǰ����Ŀ¼\n");
-	printf("\t\t3.ѡ�\n");
-	printf("\t\t\t-r �ݹ����ʾ������Ŀ¼������\n");
+	printf("\tls [选项] [目录路径]\n");
+	printf("\t\t1.显示指定目录下的所有文件及目录的信息\n");
+	printf("\t\t2.如果不输入路径，则默认为当前工作目录\n");
+	printf("\t\t3.选项：\n");
+	printf("\t\t\t-r 递归地显示所有子目录的内容\n");
 	printf("\n");
 
-	printf("\tcd Ŀ¼·��\n");
-	printf("\t\t���Ĺ���Ŀ¼����ʼ��Ϊ��Ŀ¼\n");
+	printf("\tcd 目录路径\n");
+	printf("\t\t更改工作目录，初始化为根目录\n");
 	printf("\n");
 
-	printf("\tcp Դ�ļ�·�� Ŀ���ļ�·��\n");
-	printf("\t\t1.��Դ�ļ����Ƶ�Ŀ���ļ���\n");
-	printf("\t\t2.�ļ�·��Ҫ�ṩ�ļ��������Ŀ���ļ�����Դ�ļ�����ͬ����ὫĿ���ļ��Զ�������\n");
-	printf("\t\t3.���Ŀ���ļ�����Ŀ¼������ͬ���ļ���ͬ���ļ����ᱻ���ǣ�������ֹ����\n");
-	printf("\t\t4.Ŀǰֻ֧�ָ����ļ�����֧�ָ���Ŀ¼\n");
+	printf("\tcp 源文件路径 目标文件路径\n");
+	printf("\t\t1.将源文件复制到目标文件中\n");
+	printf("\t\t2.文件路径要提供文件名，如果目标文件名与源文件名不同，则会将目标文件自动重命名\n");
+	printf("\t\t3.如果目标文件所在目录中已有同名文件，同名文件不会被覆盖，而是中止复制\n");
+	printf("\t\t4.目前只支持复制文件，不支持复制目录\n");
 	printf("\n");
 
-	printf("\tmv Դ�ļ�/Ŀ¼·�� Ŀ���ļ�/Ŀ¼·��\n");
-	printf("\t\t1.��.��Դ�ļ�/Ŀ¼�ƶ���Ŀ���ļ�/Ŀ¼��\n");
-	printf("\t\t  ��.������Դ�ļ�\n");
-	printf("\t\t2.�ļ�/Ŀ¼·��Ҫ�ṩ�ļ��������Ŀ���ļ�����Դ�ļ�����ͬ����ὫĿ���ļ��Զ�������\n");
-	printf("\t\t3.���Դ�ļ�/Ŀ¼��Ŀ���ļ�/Ŀ¼��ͬһ����Ŀ¼�У�������ָ���Ч�����൱�ڽ�Դ�ļ�/Ŀ¼������\n");
-	printf("\t\t4.�ƶ�Ŀ¼ʱ���Ὣ��Ŀ¼�µ���������һͬ�ƶ�\n");
-	printf("\t\t5.�ر�أ����Ŀ��Ŀ¼ΪԴĿ¼����Ŀ¼����ô�ƶ�Ҳ����ɹ�\n");
-	printf("\t\t6.���Ŀ���ļ�/Ŀ¼����Ŀ¼������ͬ���ļ���ͬ���ļ�/Ŀ¼���ᱻ���ǣ�������ֹ�ƶ�\n");
-	printf("\t\t7.�ر�أ�������ǰ���£����Դ�ļ�/Ŀ¼��Ŀ���ļ�/Ŀ¼��ͬһ����Ŀ¼�У���ôʲôҲ���ᷢ��\n");
+	printf("\tmv 源文件/目录路径 目标文件/目录路径\n");
+	printf("\t\t1.Ⅰ.将源文件/目录移动到目标文件/目录中\n");
+	printf("\t\t  Ⅱ.重命名源文件\n");
+	printf("\t\t2.文件/目录路径要提供文件名，如果目标文件名与源文件名不同，则会将目标文件自动重命名\n");
+	printf("\t\t3.如果源文件/目录与目标文件/目录在同一个父目录中，则这条指令的效果就相当于将源文件/目录重命名�\n");
+	printf("\t\t4.移动目录时，会将改目录下的所有内容一同移动\n");
+	printf("\t\t5.特别地，如果目标目录为源目录的子目录，那么移动也不会成功\n");
+	printf("\t\t6.如果目标文件/目录所在目录中已有同名文件，同名文件/目录不会被覆盖，而是中止移动\n");
+	printf("\t\t7.特别地，在上述前提下，如果源文件/目录与目标文件/目录在同一个父目录中，那么什么也不会发生\n");
 	printf("\n");
 
-	printf("\tct [ѡ��] Ŀ���ļ�/Ŀ¼·��\n");
-	printf("\t\t1.��ָ��·�������ļ�/Ŀ¼\n");
-	printf("\t\t2.��������·���������ڣ���ָ����Զ�������Ӧ��Ŀ¼\n");
-	printf("\t\t\t���� ct ./a/b/c/d����aΪ��Ŀ¼����ô����a���Զ����� b/c/������cĿ¼�д������ļ�d\n");
-	printf("\t\t3.ѡ�\n");
-	printf("\t\t\t-d ��ʾ����Ŀ¼��ȱʡ��ʾ�����ļ�\n");
+	printf("\tct [选项] 目标文件/目标路径\n");
+	printf("\t\t1.在指定路径创建文件/目录\n");
+	printf("\t\t2.如果输入的路径并不存在，该指令会自动创建对应的目录\n");
+	printf("\t\t\t比如 ct ./a/b/c/d，而a为空目录，那么会在a中自动创建 b/c/,再在c目录中创建新文件d\n");
+	printf("\t\t3.选项：\n");
+	printf("\t\t\t-d 表示创建目录，确省表示创建文件\n");
 	printf("\n");
 
-	printf("\trm [ѡ��] Ŀ���ļ�/Ŀ¼·��\n");
-	printf("\t\t1.ɾ��Ŀ���ļ�/Ŀ¼\n");
-	printf("\t\t2.ѡ�\n");
-	printf("\t\t\t-r ɾ��Ŀ¼ʱ����ʾ�ݹ�ؽ���Ŀ¼�µ���������һ��ɾ������ȱʡ����ֻ��ɾ������Ϊ�յ�Ŀ¼\n");
+	printf("\trm [选项] 目标文件/目录路径\n");
+	printf("\t\t1.删除目标文件/目录\n");
+	printf("\t\t2.选项：\n");
+	printf("\t\t\t-r 删除目录时，表示递归地将该目录下的所有内容一并删除；若缺省，则只能删除内容为空的目录\n");
 	printf("\n");
 
-	printf("\tvw [ѡ��] Ŀ���ļ�\n");
-	printf("\t\t1.�鿴/�޸�Ŀ���ļ�\n");
-	printf("\t\t2.ѡ�\n");
-	printf("\t\t\t-w ��ʾ�ڲ鿴�ļ���ͬʱ�����������޸ģ���ȱʡ�����ʾֻ�鿴�ļ�\n");
+	printf("\tvw [选项] 目标文件\n");
+	printf("\t\t1.查看/修改目标文件\n");
+	printf("\t\t2.选项：\n");
+	printf("\t\t\t-w 表示在查看文件的同时还会对其进行修改；若缺省，则表示只查看文件\n");
 	printf("\n");
 
-	printf("\tsc [ѡ��] �������� [��ʼ������Ŀ¼·��]\n");
-	printf("\t\t1.�����������������ļ�\n");
-	printf("\t\t\t��������1��ʱ���\n");
-	printf("\t\t\t��������2�������ļ���\n");
-	printf("\t\t2.�����д��ʼ������Ŀ¼·������Ĭ�ϴӵ�ǰ����Ŀ¼��ʼ\n");
-	printf("\t\t3.ѡ�\n");
-	printf("\t\t\t-lt ����ʱ�������ʱ��Ч����ʾ��������޸�ʱ���ָ��ʱ�������ļ�\n");
-	printf("\t\t\t-gt ����ʱ�������ʱ��Ч����ʾ��������޸�ʱ���ָ��ʱ��������ļ�\n");
-	printf("\t\t\tע�⣺-lt �� -gt ����ͬʱ��Ч\n");
-	printf("\t\t4.���û��ѡ�����ݲ����ļ�����������\n");
-	printf("\t\t5.ע�⣺��ʼ������Ŀ¼·�������У�һ��Ҫд����������֮�󣬷����ָ���޷�ʶ�𣬵�������ʧ��\n");
+	printf("\tsc [选项] 搜索参数 [开始搜索的目录路径]\n");
+	printf("\t\t1.根据搜索参数搜索文件\n");
+	printf("\t\t\t搜索参数1：时间戳\n");
+	printf("\t\t\t搜索参数2：部分文件名\n");
+	printf("\t\t2.如果不写开始搜索的目录路径，则默认从当前工作目录开始\n");
+	printf("\t\t3.选项：\n");
+	printf("\t\t\t-lt 根据时间戳搜索时生效，表示搜索最后修改时间比指定时间戳早的文件\n");
+	printf("\t\t\t-gt 根据时间戳搜索时生效，表示搜索最后修改时间比指定时间戳晚的文件\n");
+	printf("\t\t\t注意： -lt 和 -gt 不能同时生效\n");
+	printf("\t\t4.如果选项确省，则根据部分文件名进行搜索\n");
+	printf("\t\t5.注意：开始搜索的目录路径（若有）一定要写在搜索参数之后，否则该指令无法识别，导致搜索失败\n");
 	printf("\n");
 
 	printf("\tquit\n");
-	printf("\t\t�˳�����\n");
+	printf("\t\t退出程序\n");
 	printf("\n");
-	printf("����·�����ȿ���ʹ�þ���·��������./a����Ҳ��ʹ�����·��������b/c ��/b/c��\n");
+	printf("其他注意事项：\n");
+	printf("\t对于路径，既可以使用绝对路径（例： ./a），也能使用相对路径（例： b/c ， /b/c）\n");
 }

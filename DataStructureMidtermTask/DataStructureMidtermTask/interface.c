@@ -49,7 +49,7 @@ int executeCommand() {
 	int* insPara = NULL;
 	switch (insCode) {
 	case 0:
-		//lsÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//lså‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_ls_para(insPara)) {
 			return 1;
@@ -58,7 +58,7 @@ int executeCommand() {
 		free(insPara);
 		break;
 	case 1:
-		//cdÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+		//cdå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 		if (commands[1] == NULL) {
 			printf("you have not entered path\n");
 		} else {
@@ -66,7 +66,7 @@ int executeCommand() {
 		}
 		break;
 	case 2:
-		//cpÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+		//cpå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 		if (commands[1] == NULL || commands[2] == NULL) {
 			printf("you have not entered srcPth or desPath\n");
 		} else {
@@ -74,7 +74,7 @@ int executeCommand() {
 		}
 		break;
 	case 3:
-		//mvÃüÁîÃ»ÓĞ¶îÍâÑ¡Ïî£¬Ö±½Ó´«ÈëÂ·¾¶¼´¿É
+		//mvå‘½ä»¤æ²¡æœ‰é¢å¤–é€‰é¡¹ï¼Œç›´æ¥ä¼ å…¥è·¯å¾„å³å¯
 		if (commands[1] == NULL || commands[2] == NULL) {
 			printf("you have not entered srcPth or desPath\n");
 		} else {
@@ -82,7 +82,7 @@ int executeCommand() {
 		}
 		break;
 	case 4:
-		//ctÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//ctå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_ct_para(insPara)) {
 			return 1;
@@ -91,7 +91,7 @@ int executeCommand() {
 		free(insPara);
 		break;
 	case 5:
-		//rmÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//rmå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_rm_para(insPara)) {
 			return 1;
@@ -100,7 +100,7 @@ int executeCommand() {
 		free(insPara);
 		break;
 	case 6:
-		//vwÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//vwå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(2 * sizeof(int));
 		if (!match_vw_para(insPara)) {
 			return 1;
@@ -109,7 +109,7 @@ int executeCommand() {
 		free(insPara);
 		break;
 	case 7:
-		//scÃüÁîÓĞ¶îÍâÑ¡Ïî£¬Òª½øĞĞÑ¡ÏîÆ¥Åä
+		//scå‘½ä»¤æœ‰é¢å¤–é€‰é¡¹ï¼Œè¦è¿›è¡Œé€‰é¡¹åŒ¹é…
 		insPara = (int*) malloc(4 * sizeof(int));
 		if (!match_sc_para(insPara)) {
 			return 1;
@@ -222,9 +222,9 @@ int match_rm_para(int* insPara) {
 int match_sc_para(int* insPara) {
 	insPara[0] = 0;
 	insPara[1] = 0;
-	//Ê±¼ä´Á or ²¿·ÖÎÄ¼şÃû
+	//æ—¶é—´æˆ³ or éƒ¨åˆ†æ–‡ä»¶å
 	insPara[2] = -1;
-	//Â·¾¶
+	//è·¯å¾„
 	insPara[3] = -1;
 	for (int i = 1; commands[i] != NULL; i++) {
 		if (commands[i][0] == '-') {

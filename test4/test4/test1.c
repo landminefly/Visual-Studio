@@ -1,115 +1,115 @@
-#define _CRT_SECURE_NO_WARNINGS 1
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-typedef struct SortTreeNode {
-	int value;
-	struct SortTreeNode* left;
-	struct SortTreeNode* right;
-} SortTreeNode, *SortTree;
-
-SortTree init() {
-	return NULL;
-}
-
-void add(SortTree* t, int value) {
-	SortTreeNode* nodeToAdd = (SortTreeNode*) malloc(sizeof(SortTreeNode));
-	nodeToAdd->value = value;
-	nodeToAdd->left = NULL;
-	nodeToAdd->right = NULL;
-	if (*t == NULL) {
-		*t = nodeToAdd;
-	} else if(value < (*t)->value) {
-		add(&((*t)->left), value);
-	} else if (value > (*t)->value) {
-		add(&((*t)->right), value);
-	}
-}
-
-void inorder(SortTree t) {
-	if (t == NULL) {
-		return;
-	}
-	inorder(t->left);
-	printf("%d\t", t->value);
-	inorder(t->right);
-}
-
-//length±íÊ¾µ±Ç°µÄ²éÕÒ³¤¶È£¬ÓÉsearchLengthµ÷ÓÃ
-int searchLengthReverse(SortTree t, int key, int length) {
-	if (t == NULL) {
-		//keyÔÚ¶ş²æÊ÷ÖĞ²»´æÔÚ£¬·µ»Ø-1
-		return -1;
-	} else if (key == t->value) {
-		//ÕÒµ½key
-		return length + 1;
-	} else if (key > t->value) {
-		//ÍùÓÒµİ¹é
-		return searchLengthReverse(t->right, key, length + 1);
-	} else if (key < t->value) {
-		//Íù×óµİ¹é
-		return searchLengthReverse(t->left, key, length + 1);
-	}
-}
-
-//·µ»ØkeyµÄ²éÕÒ³¤¶È
-int searchLength(SortTree t, int key) {
-	searchLengthReverse(t, key, 0);
-}
-
-//·µ»Ø´Ó¸ù½Úµãµ½ key Â·¾¶ÉÏµÄÏÂÒ»¸ö½Úµã£¬ÓÉcommonAncesµ÷ÓÃ
-SortTreeNode* nextChild(SortTreeNode* t, int key) {
-	if (key < t->value) {
-		return t->left;
-	} else if (key > t->value) {
-		return t->right;
-	} else {
-		return t;
-	}
-}
-
-//¸Ãº¯ÊıÄ¬ÈÏ key1 ºÍ key2 ¶¼ÔÚ¶ş²æÊ÷ÖĞ
-//Òò´Ë±ß²é±ßÊä³ö
-//	1.µ±¶şÕßµÄ×æÏÈ¿ªÊ¼²»Ò»ÖÂÊ±£¬ÄÇÃ´ËüÃÇÍùºóµÄ×æÏÈ¶¼»á²»Ò»ÖÂ£¬Òò´Ë¿ÉÒÔÖ±½ÓÍ£Ö¹²éÕÒ
-//	2.µ±ÕÒµ½¶şÕßÖ®Ò»Ê±£¬Ò²ÒªÍ£Ö¹²éÕÒ
-void commonAnces(SortTree t, int key1, int key2) {
-	//key1_temp ±íÊ¾´Ó¸ù½Úµãµ½ key1 Â·¾¶ÉÏµÄ¸÷¸ö½Úµã£¬ÔÚÏÂÃæµÄÑ­»·ÖĞ»áÖğ²½±ä»¯
-	SortTreeNode* key1_temp = t;
-	//key2_temp Í¬Àí
-	SortTreeNode* key2_temp = t;
-	while (1) {
-		//ÔÚÊä³öÖ®Ç°£¬ÏÈÅĞ¶ÏÊÇ·ñÕÒµ½ÁË¶şÕßÖ®Ò»£¬±ÜÃâÊä³ö key1 »ò key2 ±¾Éí
-		if (key1_temp->value == key1 || key2_temp->value == key2) {
-			break;
-		}
-		//Èç¹û×æÏÈÒ»ÖÂ£¬ÔòÊä³ö£»Èç¹û²»Ò»ÖÂ£¬ÔòÍ£Ö¹²éÕÒ
-		if (key1_temp == key2_temp) {
-			printf("%d\t", key1_temp->value);
-		} else {
-			break;
-		}
-		//key1 ºÍ key2 ·Ö±ğÏòÏÂ²éÕÒÒ»²½
-		key1_temp = nextChild(key1_temp, key1);
-		key2_temp = nextChild(key2_temp, key2);
-	}
-}
-
-int main() {
-	SortTree t = init();
-	add(&t, 12);
-	add(&t, 7);
-	add(&t, 17);
-	add(&t, 2);
-	add(&t, 11);
-	add(&t, 4);
-	add(&t, 9);
-	add(&t, 16);
-	add(&t, 21);
-	add(&t, 13);
-	inorder(t);
-	printf("\n");
-	printf("%d", searchLength(t, 21));
-	printf("\n");
-	commonAnces(t, 4, 9);
-}
+//#define _CRT_SECURE_NO_WARNINGS 1
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <time.h>
+//
+//typedef struct SortTreeNode {
+//	int value;
+//	struct SortTreeNode* left;
+//	struct SortTreeNode* right;
+//} SortTreeNode, *SortTree;
+//
+//SortTree init() {
+//	return NULL;
+//}
+//
+//void add(SortTree* t, int value) {
+//	SortTreeNode* nodeToAdd = (SortTreeNode*) malloc(sizeof(SortTreeNode));
+//	nodeToAdd->value = value;
+//	nodeToAdd->left = NULL;
+//	nodeToAdd->right = NULL;
+//	if (*t == NULL) {
+//		*t = nodeToAdd;
+//	} else if(value < (*t)->value) {
+//		add(&((*t)->left), value);
+//	} else if (value > (*t)->value) {
+//		add(&((*t)->right), value);
+//	}
+//}
+//
+//void inorder(SortTree t) {
+//	if (t == NULL) {
+//		return;
+//	}
+//	inorder(t->left);
+//	printf("%d\t", t->value);
+//	inorder(t->right);
+//}
+//
+////lengthè¡¨ç¤ºå½“å‰çš„æŸ¥æ‰¾é•¿åº¦ï¼Œç”±searchLengthè°ƒç”¨
+//int searchLengthReverse(SortTree t, int key, int length) {
+//	if (t == NULL) {
+//		//keyåœ¨äºŒå‰æ ‘ä¸­ä¸å­˜åœ¨ï¼Œè¿”å›-1
+//		return -1;
+//	} else if (key == t->value) {
+//		//æ‰¾åˆ°key
+//		return length + 1;
+//	} else if (key > t->value) {
+//		//å¾€å³é€’å½’
+//		return searchLengthReverse(t->right, key, length + 1);
+//	} else if (key < t->value) {
+//		//å¾€å·¦é€’å½’
+//		return searchLengthReverse(t->left, key, length + 1);
+//	}
+//}
+//
+////è¿”å›keyçš„æŸ¥æ‰¾é•¿åº¦
+//int searchLength(SortTree t, int key) {
+//	searchLengthReverse(t, key, 0);
+//}
+//
+////è¿”å›ä»æ ¹èŠ‚ç‚¹åˆ° key è·¯å¾„ä¸Šçš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ï¼Œç”±commonAncesè°ƒç”¨
+//SortTreeNode* nextChild(SortTreeNode* t, int key) {
+//	if (key < t->value) {
+//		return t->left;
+//	} else if (key > t->value) {
+//		return t->right;
+//	} else {
+//		return t;
+//	}
+//}
+//
+////è¯¥å‡½æ•°é»˜è®¤ key1 å’Œ key2 éƒ½åœ¨äºŒå‰æ ‘ä¸­
+////å› æ­¤è¾¹æŸ¥è¾¹è¾“å‡º
+////	1.å½“äºŒè€…çš„ç¥–å…ˆå¼€å§‹ä¸ä¸€è‡´æ—¶ï¼Œé‚£ä¹ˆå®ƒä»¬å¾€åçš„ç¥–å…ˆéƒ½ä¼šä¸ä¸€è‡´ï¼Œå› æ­¤å¯ä»¥ç›´æ¥åœæ­¢æŸ¥æ‰¾
+////	2.å½“æ‰¾åˆ°äºŒè€…ä¹‹ä¸€æ—¶ï¼Œä¹Ÿè¦åœæ­¢æŸ¥æ‰¾
+//void commonAnces(SortTree t, int key1, int key2) {
+//	//key1_temp è¡¨ç¤ºä»æ ¹èŠ‚ç‚¹åˆ° key1 è·¯å¾„ä¸Šçš„å„ä¸ªèŠ‚ç‚¹ï¼Œåœ¨ä¸‹é¢çš„å¾ªç¯ä¸­ä¼šé€æ­¥å˜åŒ–
+//	SortTreeNode* key1_temp = t;
+//	//key2_temp åŒç†
+//	SortTreeNode* key2_temp = t;
+//	while (1) {
+//		//åœ¨è¾“å‡ºä¹‹å‰ï¼Œå…ˆåˆ¤æ–­æ˜¯å¦æ‰¾åˆ°äº†äºŒè€…ä¹‹ä¸€ï¼Œé¿å…è¾“å‡º key1 æˆ– key2 æœ¬èº«
+//		if (key1_temp->value == key1 || key2_temp->value == key2) {
+//			break;
+//		}
+//		//å¦‚æœç¥–å…ˆä¸€è‡´ï¼Œåˆ™è¾“å‡ºï¼›å¦‚æœä¸ä¸€è‡´ï¼Œåˆ™åœæ­¢æŸ¥æ‰¾
+//		if (key1_temp == key2_temp) {
+//			printf("%d\t", key1_temp->value);
+//		} else {
+//			break;
+//		}
+//		//key1 å’Œ key2 åˆ†åˆ«å‘ä¸‹æŸ¥æ‰¾ä¸€æ­¥
+//		key1_temp = nextChild(key1_temp, key1);
+//		key2_temp = nextChild(key2_temp, key2);
+//	}
+//}
+//
+//int main() {
+//	SortTree t = init();
+//	add(&t, 12);
+//	add(&t, 7);
+//	add(&t, 17);
+//	add(&t, 2);
+//	add(&t, 11);
+//	add(&t, 4);
+//	add(&t, 9);
+//	add(&t, 16);
+//	add(&t, 21);
+//	add(&t, 13);
+//	inorder(t);
+//	printf("\n");
+//	printf("%d", searchLength(t, 21));
+//	printf("\n");
+//	commonAnces(t, 4, 9);
+//}
